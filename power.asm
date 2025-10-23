@@ -4,6 +4,9 @@ public pow
 
 pow proc
 
+	cmp rdx, 0
+	je endLoop
+
 	mov rax, rcx
 	mov r8, rdx
 	dec r8
