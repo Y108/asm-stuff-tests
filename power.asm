@@ -8,15 +8,15 @@ pow proc
 	mov r8, rdx
 	dec r8
 
-_loop:
+loopMultiply:
 
 	dec r8
 	imul rcx
 	cmp r8,0
-	je _end
-	jmp _loop
+	je endLoop
+	jmp loopMultiply
 
-_end:
+endLoop:
 
 	ret
 
