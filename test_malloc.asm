@@ -20,7 +20,7 @@ initHeap proc ; void initHeap()
 
 initHeap endp
 
-alloc proc	; int64_t* alloc(int64_t anzBytes)
+alloc proc	; int64_t* alloc(int64_t numBytes)
 	
 	cmp H_Header.FreeBlockSize, rcx
 	jl alloc_fail
@@ -59,13 +59,11 @@ main proc
 	call initHeap
 
 	mov rcx, 32
-
 	call alloc
 
 	call deallocAll
 
 	mov rcx, 32
-
 	call alloc
 
 	ret
