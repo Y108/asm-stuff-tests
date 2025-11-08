@@ -2,7 +2,7 @@
 
 public pow
 
-pow proc
+pow proc ; int64_t pow(int64_t base, int64_t exponent)
 
 	cmp rdx, 0
 	je endLoop
