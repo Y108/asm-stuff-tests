@@ -1,0 +1,117 @@
+includelib msvcrt.lib
+
+EXTERN malloc:PROC
+
+.data
+
+numstr db "%d" , 0
+
+.code
+
+Fibarray PROC
+	; void* Fibarray (size_t iterations)
+	; rax = size_t ptr to number array
+
+	push rbx
+	mov rbx, rcx
+	sub rsp, 32
+
+	imul rcx, 8
+	add rcx, 8
+	call malloc
+
+	mov rdx, 0
+	mov [rax + rbx * 8], rdx
+
+	cmp rbx, 1
+	jl FibZero
+	je FibOne
+	cmp rbx, 2
+	je FibTwo
+
+	mov rcx, 1
+	mov [rax], rcx
+	mov [rax + 8], rcx
+	xor rcx, rcx
+	sub rbx, 2
+
+	jg FibLoop
+
+FibZero:
+	jmp FibEnd
+
+FibOne: 
+	mov rdx, 1
+	mov [rax], rdx
+	jmp FibEnd
+
+FibTwo:
+	mov rdx, 1
+	mov [rax], rdx
+	mov [rax + 8], rdx
+	jmp FibEnd
+
+FibLoop:
+	mov r8, [rax + rcx * 8]
+	mov r9, [rax + rcx * 8 + 8]
+	
+	add r8, r9
+	mov [rax + rcx * 8 + 16], r8
+
+	inc rcx
+	cmp rcx, rbx
+	jl FibLoop
+
+FibEnd:
+
+	add rsp, 32
+	pop rbx
+	ret
+Fibarray ENDP
+
+Fibnum PROC
+	; uint64_t Fibnum (size_t iterations)
+	; rax = Fibonacci number at positions of rcx
+
+	sub rsp, 32
+
+	cmp rcx, 1
+	js FibZero
+	je FibOne
+	cmp rcx, 3
+	jl FibOne
+	je FibTwo
+
+	sub rcx, 3
+	mov r8, 1
+	mov r9, 2
+	jmp AddLoop
+
+FibZero:
+	mov rax, 0
+	jmp FibEnd
+
+FibOne: 
+	mov rax, 1
+	jmp FibEnd
+
+FibTwo:
+	mov rax, 2
+	jmp FibEnd
+
+AddLoop:
+	add r8, r9
+	xor r8, r9
+	xor r9, r8
+	xor r8, r9
+
+	loop AddLoop
+
+	mov rax, r9
+
+FibEnd:
+	add rsp, 32
+	ret
+Fibnum ENDP
+
+END
