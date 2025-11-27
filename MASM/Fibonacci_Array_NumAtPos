@@ -3,9 +3,6 @@ includelib msvcrt.lib
 EXTERN malloc:PROC
 
 .data
-
-numstr db "%d" , 0
-
 .code
 
 Fibarray PROC
