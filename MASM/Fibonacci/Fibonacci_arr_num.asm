@@ -14,11 +14,7 @@ Fibarray PROC
 	sub rsp, 32
 
 	imul rcx, 8
-	add rcx, 8
 	call malloc
-
-	mov rdx, 0
-	mov [rax + rbx * 8], rdx
 
 	cmp rbx, 1
 	jl FibZero
