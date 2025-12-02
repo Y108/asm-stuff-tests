@@ -18,7 +18,5 @@ int main() {
 		}
 	}
 
-	free(arrPTR);
-
 	return 0;
 }
