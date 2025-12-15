@@ -1,6 +1,7 @@
 .code
 Modulo PROC
 ; ecx mod edx -> eax
+; this is the mathematical modulo, not a % n :
 
 	cmp ecx, 0
 	je zeroLabel
