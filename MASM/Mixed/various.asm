@@ -5,17 +5,24 @@ __num_E REAL8  2.718281828459045 ; Euler's number
 .code 
 
 _FACT PROC
-	cmp rcx, 0
-	jle smallloop
 
-	mov rax, 1
+	; factorial of a positive number
+	; uint64_t _FACT(uint64_t value)
+	;
+	; (value)!
+
+	mov				rax, 1			; move 1 to output
+
+	cmp				rcx, 0			; check if value is lower or equal to zero
+	jle				zerofact		; if zero, jump to end / return one
+
 mulloop:
-	imul rax, rcx
-	loop mulloop
+	imul			rax, rcx		; multiply rax by counter
+	loop			mulloop			; loop until counter is zero
+
+zerofact:
 	ret
-smallloop:
-	mov rax, 1
-	ret
+
 _FACT ENDP
 
 _DOUBLEFACT PROC
@@ -49,74 +56,95 @@ powloop:
 _POW ENDP
 
 _nCr PROC
-	; rcx = n, rdx = r
-	; 
-	; |n|
-	; |r|
+
+	; binomial coefficient 
+	; uint64_t _nCr(uint64_t n, uint64_t r
 	;
-	; n!/ (n-r)! * r!
-	; rxx!/ r8! *  rdx!
+	; n! / (r! * (n-r)!)
 
-	mov r8, rcx
-	sub r8, rdx
+	mov				r8, rcx
+	sub				r8, rdx
 
-	sub rsp, 32
-	call _FACT
-	add rsp, 32
-	mov rcx, rax
+	sub				rsp, 32
+	call			_FACT			; call factorial function
+	mov				rcx, rax
 
-	xor rcx, rdx
-	xor rdx, rcx	; rcx <-> rdx
-	xor rcx, rdx
+	xor				rcx, rdx
+	xor				rdx, rcx		; swap rdx and rcx
+	xor				rcx, rdx
 
-	sub rsp, 32
-	call _FACT
-	add rsp, 32
-	mov rcx, rax
 
-	xor rcx, r8
-	xor r8, rcx		; rdx <-> r8
-	xor rcx, r8
+	call			_FACT
+	mov				rcx, rax
 
-	sub rsp, 32
-	call _FACT
-	add rsp, 32
-	mov rcx, rax
+	xor				rcx, r8
+	xor				r8, rcx
+	xor				rcx, r8
 
-	imul rcx, r8
+	call			_FACT
+	add				rsp, 32
+	mov				rcx, rax
 
-	xor rdx, rax
-	xor rax, rdx
-	xor rdx, rax
+	imul			rcx, r8
 
-	xor rdx, rdx
+	xor				rdx, rax
+	xor				rax, rdx
+	xor				rdx, rax
 
-	idiv rcx
+	xor				rdx, rdx
+
+	idiv			rcx
 
 	ret
+
 _nCr ENDP
+
+_SUM PROC
+
+	; Gauß formula for sums
+	; uint64_t _SUM(uint64_t value)
+	;
+	; (value * (value + 1)) / 2 
+
+	mov				rdx, rcx		; move input value to rdx     
+	inc				rdx				; increase rdx by 1
+
+	imul			rcx, rdx		; multiply value by (value+1)
+	shr				rcx, 1			; divide product by 2
+
+	mov				rax, rcx		; move to output
+
+	ret
+
+_SUM ENDP
 	
 _POWSD PROC
-	cmp rdx, 0
-	jle powsdexit
-	mov rcx, rdx
-	movsd xmm1, xmm0
-	dec rcx
+
+	; powers with positive integer exponents
+	; double _POWSD(double base, int exponent)
+	;
+	; base ^ exponent 
+
+	cmp				rdx, 0			; check if exponent is zero
+	jle				powsdexit		; jump to exit if true
+	mov				rcx, rdx		; move exponent to loop counter
+	movsd			xmm1, xmm0		; move base to xmm1 as factor
+	dec				rcx
 
 powsdloop:
-	mulsd xmm0, xmm1
-	loop powsdloop
+	mulsd			xmm0, xmm1		; multiply base by factor
+	loop			powsdloop		; loop until counter is zero
 	ret
 
 powsdexit:
-	mov rdx, 1
-	cvtsi2sd xmm0, rdx
+	mov				rdx, 1			; return one if exponent is zero
+	cvtsi2sd		xmm0, rdx		; convert integer value as double to output
 	ret
 
 _POWSD ENDP
 
 _COS PROC
-	; Sine of a integer
+	; Cosine of an integer
 
 	mov rdx, 2
 	mov r8, -1
