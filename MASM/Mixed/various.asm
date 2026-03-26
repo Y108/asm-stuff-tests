@@ -17,8 +17,8 @@ _FACT PROC
 	jle				zerofact		; if zero, jump to end / return one
 
 mulloop:
-	imul			rax, rcx		; multiply rax by counter
-	loop			mulloop			; loop until counter is zero
+	imul				rax, rcx		; multiply rax by counter
+	loop				mulloop			; loop until counter is zero
 
 zerofact:
 	ret
